@@ -66,7 +66,7 @@ aside {
 .board {
     display: grid;
     grid-template-columns: repeat(12, 1fr);
-    grid-template-rows: 20px repeat(5,80px);
+    grid-template-rows: 20px repeat(5,100px);
     /* border: 1px solid gray; */
 }
 
@@ -111,6 +111,7 @@ aside {
 .board_user_cell {
     border-bottom: 1px solid gray;
     transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+    overflow-y: scroll;
 }
 
 .board_user_cell.drop {
@@ -201,6 +202,10 @@ aside {
     text-align: center;
     line-height: 50px;
     z-index: 2;
+}
+
+.task.applied::before {
+    display: none;
 }
 
 .task span {
