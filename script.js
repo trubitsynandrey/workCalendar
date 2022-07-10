@@ -15,7 +15,10 @@ let isLoaded = false;
 
 const loader = document.querySelector(".loader_wraper")
 
+const dateOffset = (24*60*60*1000) * 3;
+
 const start = new Date();
+start.setTime(start.getTime() - dateOffset)
 const end = new Date("02/10/2099");
 let calender = [];
 let loop = new Date(start);
@@ -136,17 +139,20 @@ const tasksWrapper = document.querySelector(".tasks_wrapper");
 let daysCount = 0;
 function nextWeek(offset = 0) {
   calendarElements.forEach((node, idx) => {
+    if (calender[idx + offset] === new Date().toLocaleDateString()) {
+      node.classList.add('today')
+    }
     node.innerText = calender[idx + offset].slice(0, 5).replace("/", ".");
     prevButton.disabled = daysCount === 0;
   });
 }
 nextWeek();
 nextButton.addEventListener("click", () => {
-  daysCount += 15;
+  daysCount += 10;
   nextWeek(daysCount);
 });
 prevButton.addEventListener("click", () => {
-  daysCount -= 15;
+  daysCount -= 10;
   nextWeek(daysCount);
 });
 
@@ -174,9 +180,9 @@ const takeTasks = async () => {
 takeUsers().then((res) => {
   let j = 0;
   let countDate = 0;
-  for (let i = 0; i < 17 * usersData.length; i++) {
+  for (let i = 0; i < 12 * usersData.length; i++) {
     const div = document.createElement("div");
-    if (i === 0 || i % 17 === 0) {
+    if (i === 0 || i % 12 === 0) {
       div.classList.add("board_user");
       console.log("user", usersData[j]);
       div.innerText = usersData[j].firstName;
@@ -187,7 +193,7 @@ takeUsers().then((res) => {
       div.addEventListener("dragleave", dragLeave);
       div.addEventListener("dragover", allowDrop);
       div.addEventListener("drop", dropToUser);
-    }  else if (i === 16 || i === 33 || i === 50) {
+    }  else if (i === 11 || i === 23 || i === 35 ) {
         div.classList.add("empty")
     } else {
       div.classList.add("board_user_cell");
@@ -198,6 +204,10 @@ takeUsers().then((res) => {
       //   div.addEventListener("drop", dragDrop);
       div.addEventListener("drop", drop);
       div.setAttribute("data-date", calender[countDate + daysCount]);
+      if (calender[countDate + daysCount] === new Date().toLocaleDateString()) {
+        div.classList.add('today')
+      }
+       
       div.setAttribute("data-executor", usersData[j - 1].id);
     //   div.innerText = i;
       countDate++;
