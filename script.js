@@ -2,12 +2,18 @@
 // make dropped items not hidable by liveSearch DONE!
 // implement function drop to user and apply task in order of its date DONE!
 // nextbutton to show next week without tasks
-// loading indicator
+// loading indicator DONE!
+// show hours for task
+// refactor     
 const usersUrl =
   "https://varankin_dev.elma365.ru/api/extensions/2a38760e-083a-4dd0-aebc-78b570bfd3c7/script/users";
 
 const tasksUrl =
   "https://varankin_dev.elma365.ru/api/extensions/2a38760e-083a-4dd0-aebc-78b570bfd3c7/script/tasks";
+
+let isLoaded = false;
+
+const loader = document.querySelector(".loader_wraper")
 
 const start = new Date();
 const end = new Date("02/10/2099");
@@ -68,9 +74,10 @@ const drop = (event) => {
     task.classList.remove("dragging");
   });
   const tasks = event.currentTarget.querySelectorAll(":scope > .task");
+  console.log(tasks, 'tasks')
   Array.from(tasks).forEach(task => {
     task.classList.add("applied")
-    task.children[1]?.remove()
+    task.querySelector('.task > #descr')?.remove()
     console.dir(task, 'tasksinside')
   })
 };
@@ -104,9 +111,10 @@ const dropToUser = (event) => {
         task.classList.remove("dragging");
       });
       const tasksInsideCell = cell.querySelectorAll(":scope > .task");
+      console.log(tasksInsideCell, 'tasksinside')
       Array.from(tasksInsideCell).forEach(task => {
         task.classList.add("applied")
-        task.children[1]?.remove()
+        task.querySelector('.task > #descr')?.remove()
       })
     }
   });
@@ -179,6 +187,8 @@ takeUsers().then((res) => {
       div.addEventListener("dragleave", dragLeave);
       div.addEventListener("dragover", allowDrop);
       div.addEventListener("drop", dropToUser);
+    }  else if (i === 16 || i === 33 || i === 50) {
+        div.classList.add("empty")
     } else {
       div.classList.add("board_user_cell");
       div.addEventListener("dragenter", dragEnter);
@@ -189,6 +199,7 @@ takeUsers().then((res) => {
       div.addEventListener("drop", drop);
       div.setAttribute("data-date", calender[countDate + daysCount]);
       div.setAttribute("data-executor", usersData[j - 1].id);
+    //   div.innerText = i;
       countDate++;
     }
 
@@ -196,17 +207,25 @@ takeUsers().then((res) => {
   }
 });
 
-takeTasks().then((res) =>
+takeTasks().then((res) => {
+    loader.remove()
   tasks.forEach((taskItem) => {
     const task = document.createElement("div");
     task.classList.add("task");
     const subject = document.createElement("p");
+    const span = document.createElement('span')
+    let spanTime = (new Date(taskItem.planEndDate).getDay() - new Date(taskItem.planStartDate).getDay()) * 8;
+    span.innerText = spanTime;
+
+
     subject.innerText = taskItem.subject;
     task.append(subject);
+    task.append(span)
     
     if (taskItem.executor === null) {
       // task instance
       const description = document.createElement("p");
+      description.id = "descr"
       description.innerText = "Lorem ipsum dolor sit amet";
       task.append(description);
 
@@ -223,7 +242,7 @@ takeTasks().then((res) =>
     } else {
       task.classList.add("applied");
       const userCells = document.querySelectorAll(".board_user_cell");
-      userCells.forEach((item) => {
+      userCells.forEach((item, idx) => {
         const { date, executor } = item.dataset;
         const pattern = /(\d{2})\/(\d{2})\/(\d{4})/;
         const cellDate = new Date(date.replace(pattern, "$3-$2-$1")).getTime();
@@ -234,7 +253,7 @@ takeTasks().then((res) =>
       });
     }
   })
-);
+});
 
 function liveSearch() {
   // Locate the card elements
@@ -259,3 +278,4 @@ function liveSearch() {
     }
   }
 }
+
