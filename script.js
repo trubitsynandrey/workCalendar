@@ -224,7 +224,7 @@ takeTasks().then((res) => {
     task.classList.add("task");
     const subject = document.createElement("p");
     const span = document.createElement('span')
-    let spanTime = (new Date(taskItem.planEndDate).getDay() - new Date(taskItem.planStartDate).getDay()) * 8;
+    let spanTime = Math.abs((new Date(taskItem.planEndDate).getDay() - new Date(taskItem.planStartDate).getDay()) * 8);
     span.innerText = spanTime;
 
 
