@@ -83,14 +83,6 @@ aside {
     border-left: 1px solid gray;
 }
 
-/* .board div:last-child {
-    border: none;
-}
-.board div:first-child {
-    border: none;
-    border-right: 1px solid gray;
-} */
-
 .empty {
     border: none;
 }
@@ -224,7 +216,7 @@ aside {
 .tasks_wrapper {
     display: flex;
     flex-direction: column;
-    max-height: 300px;
+    max-height: 360px;
     overflow-y: scroll;
     gap: 10px;
 }
